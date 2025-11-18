@@ -1,0 +1,29 @@
+:root {
+  /* Primary / Secondary / Tertiary as suggested */
+  --color-primary: #1E6FFF;   /* Blue - primary (brand, CTAs) */
+  --color-secondary: #3EB489; /* Mint - secondary (accents) */
+  --color-tertiary: #F5F1E6;  /* Beige - backgrounds */
+
+  --text-on-primary: #ffffff;
+  --sidebar-width: 240px;
+  --muted: #6b7280;
+  --mobile-navbar-height: 56px;
+}
+
+/* Desktop: app-content gets left margin for sidebar */
+@media (min-width: 600px) {
+  .app-content {
+    margin-left: var(--sidebar-width);
+    padding: 2rem;
+  }
+}
+
+/* Mobile: app-content gets top padding for mobile navbar */
+@media (max-width: 599px) {
+  .app-content {
+    padding-top: var(--mobile-navbar-height);
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 1rem;
+  }
+}
