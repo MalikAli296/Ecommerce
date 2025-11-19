@@ -7,11 +7,32 @@ import logo from '../logo.svg';
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+    const [isDark, setIsDark] = useState(() => {
+    try {
+      const stored = localStorage.getItem('theme');
+      if (stored) return stored === 'dark';
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } catch {
+      return false;
+    }
+  });
+
+    useEffect(() => {
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    try {
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    } catch {}
+  }, [isDark]);
 
   // close drawer when route changes
   useEffect(() => {
     setOpen(false);
   }, [location.pathname]);
+
+  const toggleTheme = (e) => {
+    e?.stopPropagation();
+    setIsDark(prev => !prev);
+  };
 
   const linkClass = ({ isActive }) => (isActive ? 'nav-link active' : 'nav-link');
 
@@ -60,6 +81,27 @@ export default function Sidebar() {
           <NavLink to="/about" className={linkClass}>
             <i className="bi bi-info-circle" aria-hidden="true" /> About Us
           </NavLink>
+        {/* Theme toggle rendered as a nav-link so it looks/behaves like the other items */}
+          <button
+            type="button"
+            className="nav-link theme-toggle d-flex align-items-center justify-content-between"
+            onClick={toggleTheme}
+            aria-pressed={isDark}
+            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            <i className={isDark ? 'bi bi-moon-stars' : 'bi bi-brightness-high'} aria-hidden="true" />
+            <span className="theme-label">Theme</span>
+
+            <label className="theme-switch" aria-hidden="true" onClick={(e) => e.stopPropagation()}>
+              <input
+                type="checkbox"
+                checked={isDark}
+                onChange={toggleTheme}
+                aria-hidden="true"
+              />
+              <span className="knob" />
+            </label>
+          </button>
         </nav>
 
         <div className="sidebar-footer">

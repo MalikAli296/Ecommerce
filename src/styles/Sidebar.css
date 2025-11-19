@@ -186,6 +186,10 @@
    Mobile Styles (≤599px) – Your Latest Version)
    ========================================================================== */
 @media (max-width: 599px) {
+  main,
+  .app-content {
+    margin-top: var(--mobile-navbar-height);
+  }
   .mobile-navbar {
     display: flex;
   }
