@@ -9,6 +9,10 @@
   --sidebar-width: 240px;
   --muted: #6b7280;
   --mobile-navbar-height: 56px;
+
+  /* new token: maximum readable content width */
+  --content-max-width: 1100px;
+  --content-horizontal-gap: 16px; /* visible gap between sidebar and page content */
 }
 
 /* Dark theme overrides */
@@ -20,9 +24,76 @@
 
   --text-on-primary: #e6f7ff;
   --muted: #9aa6b2;
+
+  /* preserve existing variables and add a couple for text usage */
+  --text-default: #e6f7ff;        /* primary readable text */
+  --text-surface: rgba(230,247,255,0.95); /* surface text for body/paragraphs */
+  --text-muted: #9aa6b2;          /* muted text (less contrast) */
 }
 
-/* Theme switch inside nav */
+/* Apply default light text to root content areas */
+:root[data-theme='dark'] body,
+[data-theme='dark'] body,
+:root[data-theme='dark'] main,
+[data-theme='dark'] main,
+:root[data-theme='dark'] .page-container,
+[data-theme='dark'] .page-container {
+  color: var(--text-surface);
+}
+
+/* Make headings, paragraphs, links and common UI text use light colors */
+[data-theme='dark'] h1,
+[data-theme='dark'] h2,
+[data-theme='dark'] h3,
+[data-theme='dark'] h4,
+[data-theme='dark'] h5,
+[data-theme='dark'] h6,
+[data-theme='dark'] p,
+[data-theme='dark'] a,
+[data-theme='dark'] li,
+[data-theme='dark'] label,
+[data-theme='dark'] span,
+[data-theme='dark'] small,
+[data-theme='dark'] .text-muted,
+[data-theme='dark'] .muted,
+[data-theme='dark'] .member-role,
+[data-theme='dark'] .contact-subtitle,
+[data-theme='dark'] .footer-link {
+  color: var(--text-default) !important;
+}
+
+/* Form controls and placeholders */
+[data-theme='dark'] input,
+[data-theme='dark'] textarea,
+[data-theme='dark'] select,
+[data-theme='dark'] button {
+  color: var(--text-default);
+}
+
+/* Softer placeholders */
+[data-theme='dark'] ::placeholder {
+  color: color-mix(in srgb, var(--text-default) 60%, black 40%);
+  opacity: 0.9;
+}
+
+/* Ensure subtle elements remain readable but muted */
+[data-theme='dark'] .muted,
+[data-theme='dark'] .text-muted,
+[data-theme='dark'] .stat-label,
+[data-theme='dark'] .member-role {
+  color: var(--text-muted) !important;
+}
+
+/* Link states in dark mode */
+[data-theme='dark'] a,
+[data-theme='dark'] .link-inline {
+  color: color-mix(in srgb, var(--color-secondary) 60%, var(--text-default) 40%);
+}
+[data-theme='dark'] a:hover,
+[data-theme='dark'] .link-inline:hover {
+  color: var(--color-secondary);
+}
+
 .theme-toggle {
   display: flex;
   align-items: center;
@@ -77,4 +148,65 @@
   background: #fff;
 }
 
-/* ...existing code... */
+/* Application content spacing + content width constraint */
+
+/* Make app content have inner padding and center page containers */
+.app-content {
+  box-sizing: border-box;
+  padding: 1.25rem var(--content-horizontal-gap);
+  display: block;
+}
+
+/* Page containers inside pages should be centered and constrained */
+.page-container {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Desktop: keep the app content offset for the fixed sidebar but add a small gap */
+@media (min-width: 600px) {
+  main,
+  .app-content {
+    margin-left: calc(var(--sidebar-width) + var(--content-horizontal-gap));
+  }
+
+  /* Prevent the footer from being hidden under the fixed sidebar on desktop */
+  .ecom-footer {
+    margin-left: calc(var(--sidebar-width) + var(--content-horizontal-gap));
+  }
+
+  /* Keep the app-content centered area constrained */
+  .app-content {
+    display: block;
+    /* ensure the available area is used but children are centered by .page-container */
+    width: calc(100vw - (var(--sidebar-width) + var(--content-horizontal-gap)));
+  }
+}
+
+/* On very large viewports, center the constrained content and keep the left offset */
+@media (min-width: 1100px) {
+  .app-content,
+  main,
+  .ecom-footer-inner {
+    max-width: var(--content-max-width);
+    margin-left: calc(var(--sidebar-width) + (100vw - var(--content-max-width)) / 2);
+    margin-right: auto;
+    width: auto;
+  }
+}
+
+/* Ensure mobile stays full width (no left offset) */
+@media (max-width: 599px) {
+  main,
+  .app-content,
+  .ecom-footer {
+    margin-left: 0;
+    width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
